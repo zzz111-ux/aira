@@ -809,18 +809,18 @@ function detectAdjust(text) {
 
 function feelingOf(text) {
   const feelings = [
-    { keys: ["崩溃", "撑不住"], name: "崩溃" },
-    { keys: ["焦虑", "担心", "紧张", "不安"], name: "焦虑" },
+    { keys: ["崩溃", "撑不住", "受不了", "扛不住", "撑不下去了", "要垮了"], name: "崩溃" },
+    { keys: ["焦虑", "担心", "紧张", "不安", "心烦", "心慌"], name: "焦虑" },
     { keys: ["害怕", "恐惧", "怕"], name: "害怕" },
-    { keys: ["委屈"], name: "委屈" },
-    { keys: ["生气", "愤怒", "火大"], name: "生气" },
-    { keys: ["孤独", "孤单", "没人理"], name: "孤独" },
-    { keys: ["迷茫", "没有方向", "不知道怎么办"], name: "迷茫" },
-    { keys: ["疲惫", "没力气", "好累"], name: "累" },
-    { keys: ["烦躁", "不耐烦", "很烦"], name: "烦躁" },
+    { keys: ["委屈", "被冤枉", "被误解", "被冷落"], name: "委屈" },
+    { keys: ["生气", "愤怒", "火大", "很气", "气死"], name: "生气" },
+    { keys: ["孤独", "孤单", "没人理", "没人懂我", "不被理解", "被孤立"], name: "孤独" },
+    { keys: ["迷茫", "没有方向", "不知道怎么办", "看不清前路"], name: "迷茫" },
+    { keys: ["疲惫", "没力气", "好累", "特别累", "真累", "太累", "筋疲力尽", "失眠", "睡不好", "睡眠不好", "总是醒", "入睡难", "容易醒", "睡不踏实"], name: "累" },
+    { keys: ["烦躁", "不耐烦", "很烦", "好烦", "特别烦", "真烦", "烦死", "烦透", "很躁", "坐不住"], name: "烦躁" },
     { keys: ["压力"], name: "压力" },
-    { keys: ["自责", "内疚", "对不起"], name: "自责" },
-    { keys: ["难过", "难受", "想哭", "伤心"], name: "难过" },
+    { keys: ["自责", "内疚", "对不起", "都是我不好", "怪我"], name: "自责" },
+    { keys: ["难过", "难受", "想哭", "哭", "伤心", "不开心", "低落", "郁闷", "丧", "提不起劲", "没意思", "喜欢上别人", "变心", "劈腿", "出轨", "背叛", "不喜欢我了", "分手了", "想分手", "被分手", "离婚了", "想离婚"], name: "难过" },
     { keys: ["无助", "没办法"], name: "无助" }
   ];
   for (let i = 0; i < feelings.length; i++) {
@@ -831,11 +831,15 @@ function feelingOf(text) {
 
 function hasContentSignal(text) {
   if (matchQA(text) !== -1) return true;
-  if (detectLayerChoice(text)) return true;
   if (feelingOf(text)) return true;
   if (/[?？]/.test(text)) return true;
   if (/^1([.、．:：)]?)$|为什么|怎么|如何|是不是|能不能|怎么办|困扰|原因|问题|建议|帮帮我|该不该|本质|深层|根源|底层|最主要|最根本|根本原因|第一性|剖析/.test(text)) return true;
+  if (isLifeTopic(text) && text.length >= 5) return true;
   return text.length > 34;
+}
+
+function isLifeTopic(text) {
+  return /对象|伴侣|恋人|男朋友|女朋友|老公|老婆|喜欢的人|前任|感情|恋爱|关系|结婚|离婚|分手|出轨|变心|背叛|家人|父母|孩子|朋友|同事|老板|领导|工作|辞职|跳槽|加班|钱|房子|身体|失眠|熬夜|睡不着|睡不好|刷手机|内耗|纠结|压力|迷茫|烦|焦虑|难受|崩溃|孤独|委屈|生气|害怕|担心|伤心|难过|想哭|哭|不开心|低落|郁闷|丧|提不起劲|没意思|没力气|没精神|不知道怎么办/.test(text);
 }
 
 function isDeepRequest(text) {
@@ -924,6 +928,24 @@ const GEN_ACTION = [
   }
 ];
 
+const TOPIC_ANALYSIS = [
+  "这可以作为一个需要结构化处理的生活议题：先把可验证事实与主观解释分离，再分别考察它对你所处的目标系统、关系资源与自我认知的影响，最后将可控因素与不可控边界分开，避免在信息不足时过早收敛结论。",
+  "先把事实和解释分开：客观发生了什么、你如何解读它。然后分别看它影响你的目标、你身边的资源和关系、以及你对自己的看法；最后分清哪些你能改、哪些只能调整应对。",
+  "先别急着下结论。把事实和想法分开，再看三件事：它影响你要什么、影响你和谁的关系、影响你怎么看自己。能改的去改，改不了的先别拿它惩罚自己。",
+  "先把“发生了什么”和“你是怎么想的”分开。再看它动了你的什么：想要的东西、身边的人、还是你对自己的看法。能改的想办法，改不了的先放一放。",
+  "先分清事实和想法。再看它影响了你的什么：目标、关系，还是自信。能改的改，改不了的先放下。",
+  "先分清事实和想法，再看你失去了什么、还能做什么。"
+];
+
+const TOPIC_ACTION = [
+  "现阶段建议暂缓重大决定，先完成一次三栏事实盘点——已知信息、推测、情绪反应——并据此确定一个最小可验证的下一步与复查时间。",
+  "先不急着做大决定。把已知、推测、情绪分开列出来；挑一件今天就能做的、让你稳一点的小事先做。",
+  "现在别逼自己马上想通。先写下来：确定的事、猜的事、你现在的感受。然后做一件让自己稍微稳一点的小事。",
+  "先别做重大决定。把知道的、猜的、感受到的分开写下来，先做一件让自己稳一点的小事。",
+  "先别做决定。把事实、猜测、感受分开。先做一件让你稳一点的小事。",
+  "先别急着决定。把事写下来，先照顾好自己。"
+];
+
 const DEEP_GUIDE = [
   "先说明：以下不是诊断结论，而是把问题拆成可逐层对照与排除的层级假设。\n\n" +
   "一、归因层\n个人：你的习惯、自我要求或归因方式中，是否存在放大或维持问题的部分？\n他人：是否存在特定关系或评价主体，持续影响你的自我状态？\n社会：是否有文化规范、角色期待或制度结构，把压力沉淀为个人责任？\n现实：是否存在时间、身体、经济、规则等超出个人意志范围的客观约束？\n\n" +
@@ -992,6 +1014,14 @@ function detectLayerChoice(text) {
   return null;
 }
 
+function layerChoiceRequest(text) {
+  if (!detectLayerChoice(text)) return null;
+  const last = conv.length ? conv[conv.length - 1] : null;
+  if (last && (last.deep || last.layer)) return detectLayerChoice(text);
+  const explicit = /(选|从|看|聊|拆|分析|讲讲|继续|深入|说说|查|展开|顺着|进入|研究|聊聊|谈到|了解).{0,8}?(个人|自己|他人|别人|社会|环境|现实|需求|认知|维持|身体|可控)|(个人|他人|社会|现实|需求|认知|维持|身体|可控)(的)?(层面|这一层|那层|层|因素|原因|角度|维度|问题)/;
+  return explicit.test(text) ? detectLayerChoice(text) : null;
+}
+
 function layerReply(layer) {
   const open = LAYER_OPEN[state.level].replace("X", layer);
   const tip = LAYER_TIPS[layer] || "你可以先说说这一层里最接近你处境的一条。";
@@ -1004,7 +1034,15 @@ function layerReply(layer) {
 
 function genericRoles(text) {
   const f = feelingOf(text);
-  if (!f) return [{ role: "analysis", text: FALLBACK[state.level] }];
+  if (!f) {
+    if (isLifeTopic(text)) {
+      return [
+        { role: "analysis", text: TOPIC_ANALYSIS[state.level] },
+        { role: "action", text: TOPIC_ACTION[state.level] }
+      ];
+    }
+    return [{ role: "analysis", text: FALLBACK[state.level] }];
+  }
   return [
     { role: "analysis", text: GEN_ANALYSIS[state.level](f) },
     { role: "action", text: GEN_ACTION[state.level](f) }
@@ -1163,7 +1201,8 @@ function submitQ() {
   const text = input.value.trim();
   if (!text) return;
   const changes = detectAdjust(text);
-  const content = hasContentSignal(text);
+  const layerChoice = layerChoiceRequest(text);
+  const content = hasContentSignal(text) || !!layerChoice;
   let turn;
   if (!changes.length && !content) {
     turn = {
@@ -1184,8 +1223,8 @@ function submitQ() {
       ts: new Date().toISOString()
     };
   } else {
-    const deep = content && isDeepRequest(text);
-    const layer = content && !deep ? detectLayerChoice(text) : null;
+    const deep = content && !layerChoice && isDeepRequest(text);
+    const layer = content && !deep ? layerChoice : null;
     turn = {
       id: uid(),
       text: text,
