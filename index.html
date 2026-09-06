@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
+<meta name="author" content="应如是">
+<meta name="copyright" content="© 2026 应如是 · 内耗？no！！！ · 保留所有权利">
 <title>那堵墙 · 对话</title>
 <style>
   :root {
@@ -243,6 +245,254 @@
     color: #fff;
   }
 
+  .ask-tip {
+    max-width: 620px;
+    margin: .7rem auto 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: .76rem;
+    letter-spacing: .04em;
+    line-height: 1.7;
+  }
+
+  .copy-note {
+    max-width: 620px;
+    margin: 3.2rem auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    color: var(--muted);
+    font-size: .74rem;
+    line-height: 1.9;
+    letter-spacing: .04em;
+  }
+  .copy-note p { margin: 0; }
+  .copy-note b { color: var(--green-deep); font-weight: 600; }
+  .copy-note a { color: var(--green); text-decoration: none; }
+  .copy-note a:hover { text-decoration: underline; }
+
+  body.drawer-open { overflow: hidden; }
+
+  .menu-btn {
+    position: fixed;
+    top: .85rem;
+    right: .9rem;
+    z-index: 40;
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .94);
+    box-shadow: 0 2px 10px rgba(34, 49, 42, .06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+  }
+  .menu-btn:hover {
+    border-color: var(--green);
+    background: var(--surface);
+  }
+  .menu-btn:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
+  }
+  .menu-btn .dot3 {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--ink);
+    transition: background .18s ease;
+  }
+  .menu-btn:hover .dot3 { background: var(--green); }
+
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    background: rgba(34, 49, 42, .22);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .22s ease, visibility .22s ease;
+  }
+  .backdrop.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    width: min(400px, 92vw);
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border-left: 1px solid var(--line);
+    box-shadow: -14px 0 40px rgba(34, 49, 42, .12);
+    transform: translateX(105%);
+    transition: transform .26s ease;
+  }
+  .drawer.open { transform: translateX(0); }
+
+  .drawer-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.2rem .9rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .drawer-title {
+    margin: 0;
+    font-size: 1.02rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+  }
+  .close-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    transition: color .18s ease, background .18s ease;
+  }
+  .close-btn:hover {
+    color: var(--green-deep);
+    background: var(--green-soft);
+  }
+  .close-btn:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
+
+  .history-list {
+    flex: 1;
+    margin: 0;
+    padding: .8rem 1rem 1rem;
+    list-style: none;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+  }
+  .his-item {
+    display: flex;
+    align-items: flex-start;
+    gap: .55rem;
+    padding: .72rem .8rem .6rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+  }
+  .his-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .his-q {
+    margin: 0 0 .3rem;
+    font-size: .92rem;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  .his-a {
+    margin: 0;
+    font-size: .82rem;
+    line-height: 1.55;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .tag {
+    display: inline-block;
+    margin-right: .35rem;
+    font-size: .66rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    vertical-align: 1px;
+  }
+  .tag-me { color: var(--green); }
+  .tag-you { color: var(--muted); }
+  .his-time {
+    display: block;
+    margin-top: .38rem;
+    font-size: .68rem;
+    color: var(--muted);
+    opacity: .88;
+  }
+  .his-del {
+    appearance: none;
+    flex: 0 0 auto;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: .74rem;
+    letter-spacing: .08em;
+    cursor: pointer;
+    padding: .28rem .3rem;
+    border-radius: 8px;
+    transition: color .18s ease, background .18s ease;
+  }
+  .his-del:hover {
+    color: var(--green-deep);
+    background: var(--green-soft);
+  }
+  .his-del:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 1px;
+  }
+
+  .history-empty {
+    padding: 2.4rem 1rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: .92rem;
+  }
+
+  .drawer-foot {
+    padding: .8rem 1rem;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: flex-end;
+  }
+  .text-btn {
+    appearance: none;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 999px;
+    padding: .42rem .95rem;
+    font: inherit;
+    font-size: .8rem;
+    letter-spacing: .06em;
+    cursor: pointer;
+    transition: color .18s ease, border-color .18s ease, background .18s ease;
+  }
+  .text-btn:hover {
+    color: var(--green);
+    border-color: var(--green);
+  }
+  .text-btn:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
+
   @media (max-width: 560px) {
     .page { padding: 2.8rem 1.1rem 3.5rem; }
     h1 { font-size: 1.7rem; }
@@ -251,6 +501,12 @@
     .talk { max-width: 88%; }
     .row.you p { font-size: .98rem; }
     .row.me .bubble { font-size: .95rem; }
+    .menu-btn {
+      top: .7rem;
+      right: .7rem;
+      width: 36px;
+      height: 36px;
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
@@ -259,6 +515,11 @@
 </style>
 </head>
 <body>
+<!-- 内耗？no！！！ · 那堵墙 · 原创页面 © 2026 应如是 · 保留所有权利 -->
+<button class="menu-btn" id="menuBtn" type="button" aria-label="打开对话记录" aria-expanded="false">
+  <span class="dot3"></span><span class="dot3"></span><span class="dot3"></span>
+</button>
+
 <main class="page">
   <h1>那堵墙</h1>
 
@@ -285,7 +546,27 @@
     <input id="q" type="text" placeholder="写下你此刻的困扰，按回车发送" autocomplete="off" aria-label="写下你的困扰">
     <button id="send" class="head-btn" type="button">发送</button>
   </div>
+  <p class="ask-tip">也可以直接对我说：语气简单一点 · 先安慰我 · 先分析再安慰 · 说得有条理些 · 简短一点</p>
+
+  <footer class="copy-note">
+    <p><b>© 2026 应如是 · 内耗？no！！！</b> · 保留所有权利</p>
+    <p>页面文案与代码为原创作品，未经书面授权，请勿转载、摘编、复制、改编或商用；欢迎分享本页链接。</p>
+    <p>授权与合作请联系 <a href="mailto:zzz18768@163.com">zzz18768@163.com</a></p>
+  </footer>
 </main>
+
+<div class="backdrop" id="backdrop"></div>
+
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="对话记录">
+  <div class="drawer-head">
+    <h2 class="drawer-title">对话记录</h2>
+    <button class="close-btn" id="closeDrawer" type="button" aria-label="关闭对话记录">×</button>
+  </div>
+  <ul class="history-list" id="historyList"></ul>
+  <div class="drawer-foot">
+    <button class="text-btn" id="clearAll" type="button">清空全部记录</button>
+  </div>
+</aside>
 
 <script>
 const LEVEL_NAMES = ["学术深析", "概念框架", "温和分析", "大白话", "更简单", "极简"];
@@ -349,16 +630,81 @@ const QA = [
 ];
 
 const FALLBACK = [
-  "你提出的问题暂不在预设应答范围内。就一般意义而言，内耗多源于持续的自我评判与时间导向的失衡；若具体指向深夜刷手机，可尝试询问其成因（如“为什么总熬夜”）或放下策略（如“怎么放下手机”），以便给出对应分析。",
-  "这个问题我还没有现成的分析。一般来看，内耗来自自我评判，加上时间没有流向自己；如果你问的是深夜刷手机，可以试试问“为什么总熬夜”或“怎么放下手机”。",
-  "你问的这件事，我还不确定怎么接。大概的方向是：内耗多半来自心里的评判，加上时间没有流向自己。如果是深夜刷手机的事，可以问“为什么总熬夜”或“怎么放下手机”。",
-  "这个问题我暂时答不上来。先说个大概：内耗通常来自老骂自己，和白天没做自己想做的事。要是问刷手机，就问“为什么总熬夜”或“怎么放下手机”。",
-  "这个问题我现在答不好。先说大概：内耗来自骂自己，和时间不是自己的。问手机的事，就问“为什么熬夜”或“怎么放下”。",
-  "这个问题先答不了。大概：别骂自己，白天留点时间给自己。问手机，就问熬夜和放下。"
+  "你提出的内容目前不在本页面可回应的范围内；本页面擅长情绪困扰与深夜手机这类主题的稳定梳理，事务性需求需接入真实 AI 服务才能完成。若你愿意，可把困扰再具体化——涉及工作、关系还是其他方面——我会按当前语气继续陪你梳理。",
+  "你问的事目前不在我能回应的范围内。这个页面主要做情绪梳理和深夜手机这类话题；若要处理其他事务，需要接入 AI 服务。你可以多说一点，是工作、关系，还是其他方面的困扰？",
+  "这件事我目前还答不好——页面里还没有对应的内容。它更适合用来聊情绪和“深夜手机”这类困扰；你可以再具体说说发生了什么，我先陪你理清。",
+  "这个我暂时答不了，页面里没有这方面的内容。你可以再说具体一点，比如是工作、关系还是其他什么事让你不舒服？",
+  "这个我答不了。你再说具体点，我来陪你理。",
+  "这个先答不了。你多说一点，我陪你理。"
 ];
 
-const state = { level: 2 };
-const conv = [];
+const HISTORY_KEY = "naihao-dialogue-history-v1";
+const STYLE_KEY = "naihao-dialogue-style-v1";
+const DEFAULT_STYLE = { order: "auto", comfort: "auto", logic: "plain", length: "normal" };
+
+function loadStyle() {
+  try {
+    const raw = localStorage.getItem(STYLE_KEY);
+    if (!raw) return { level: 2, style: Object.assign({}, DEFAULT_STYLE) };
+    const obj = JSON.parse(raw);
+    const level = Number.isInteger(obj.level) ? Math.max(0, Math.min(5, obj.level)) : 2;
+    const s = obj.style && typeof obj.style === "object" ? obj.style : {};
+    return {
+      level: level,
+      style: {
+        order: typeof s.order === "string" ? s.order : "auto",
+        comfort: typeof s.comfort === "string" ? s.comfort : "auto",
+        logic: typeof s.logic === "string" ? s.logic : "plain",
+        length: typeof s.length === "string" ? s.length : "normal"
+      }
+    };
+  } catch (err) {
+    return { level: 2, style: Object.assign({}, DEFAULT_STYLE) };
+  }
+}
+
+function saveStyle() {
+  try {
+    localStorage.setItem(STYLE_KEY, JSON.stringify({ level: state.level, style: state.style }));
+  } catch (err) {}
+}
+
+let state = loadStyle();
+
+function uid() {
+  return Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+}
+
+function loadHistory() {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return [];
+    return arr.filter(function (t) {
+      return t && typeof t.text === "string";
+    }).map(function (t) {
+      return {
+        id: typeof t.id === "string" && t.id ? t.id : uid(),
+        text: t.text,
+        qaIndex: Number.isInteger(t.qaIndex) ? t.qaIndex : -1,
+        deep: t.deep === true,
+        layer: typeof t.layer === "string" ? t.layer : null,
+        ts: typeof t.ts === "string" ? t.ts : new Date().toISOString()
+      };
+    });
+  } catch (err) {
+    return [];
+  }
+}
+
+function saveHistory() {
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(conv));
+  } catch (err) {}
+}
+
+let conv = loadHistory();
 
 const btnPro = document.getElementById("btnPro");
 const btnSimple = document.getElementById("btnSimple");
@@ -367,9 +713,149 @@ const track = document.getElementById("track");
 const chat = document.getElementById("chat");
 const input = document.getElementById("q");
 const sendBtn = document.getElementById("send");
+const menuBtn = document.getElementById("menuBtn");
+const backdrop = document.getElementById("backdrop");
+const drawer = document.getElementById("drawer");
+const closeDrawerBtn = document.getElementById("closeDrawer");
+const historyList = document.getElementById("historyList");
+const clearAllBtn = document.getElementById("clearAll");
 
 function esc(s) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function containsAny(text, words) {
+  return words.some(function (w) { return text.indexOf(w) !== -1; });
+}
+
+function applyToneAdjust(text, changes) {
+  const before = state.level;
+  if (/(别|不要|不用|少点|别太|别那么|不要太)(说得)?(太)?(专业|学术|深|正式|书面)/.test(text)) {
+    state.level = Math.max(3, Math.min(5, state.level + 1));
+  } else if (/(别|不要|不用|少点|别太|别那么|不要太)(说得)?(太)?简单/.test(text)) {
+    state.level = Math.min(2, Math.max(0, state.level - 1));
+  } else if (/学术深析|最专业|最学术/.test(text)) {
+    state.level = 0;
+  } else if (/更专业|专业一点|专业些|说得专业|更正式|正式一点|更学术|再专业一点|专业点|再正式一点/.test(text)) {
+    state.level = Math.max(0, state.level - 1);
+  } else if (/最简单|极简/.test(text)) {
+    state.level = 5;
+  } else if (/更简单|简单一点|简单些|说得简单|简单点|再简单一点/.test(text)) {
+    state.level = Math.min(5, state.level + 1);
+  } else if (/大白话|说人话|通俗|口语/.test(text)) {
+    if (state.level < 3) state.level = 3;
+  } else if (/温和一点|更温和|回到温和|温和些|温和分析|再温和一点/.test(text)) {
+    state.level = 2;
+  }
+  if (state.level !== before) {
+    changes.push("语气调整到「" + LEVEL_NAMES[state.level] + "」");
+  }
+}
+
+function detectAdjust(text) {
+  const s = state.style;
+  const changes = [];
+  const wantsAnalysisFirst = /先分析|先讲原因|先看原因|先解释|先说原因|先讲逻辑/.test(text);
+  if (/恢复默认|重置|回到默认|默认方式/.test(text)) {
+    state.level = 2;
+    s.order = "auto";
+    s.comfort = "auto";
+    s.logic = "plain";
+    s.length = "normal";
+    changes.push("已恢复默认回应方式");
+  } else {
+    applyToneAdjust(text, changes);
+  }
+
+  if (/不用安慰|不需要安慰|不要安慰|别安慰|少安慰|不用共情|不需要共情/.test(text)) {
+    s.comfort = "off";
+    changes.push("后面不再添加安慰性话语，直接回应");
+  } else if (/安慰我|多安慰|要安慰|需要安慰|共情我|接住我|先接住|多共情|情绪价值|温柔一点|多关心|哄哄我/.test(text)) {
+    s.comfort = "more";
+    changes.push(wantsAnalysisFirst ? "情绪会回应，但放在分析后面" : "后面会先照顾你的情绪，再进入分析");
+  }
+
+  if (/先安慰|先共情|先接住|先安抚|先抱抱|先哄|先别急着分析/.test(text)) {
+    s.order = "comfort-first";
+  } else if (wantsAnalysisFirst) {
+    s.order = "analysis-first";
+    if (s.comfort !== "off") {
+      changes.push("会先讲原因，情绪回应放在后面");
+    }
+  } else if (/先给建议|先说怎么办|先给方法|先说方法|直接告诉我怎么办|直接说怎么做/.test(text)) {
+    s.order = "action-first";
+  } else if (/按顺序|正常顺序|回到原来的顺序|默认顺序/.test(text)) {
+    s.order = "auto";
+  }
+
+  if (/(别讲道理|不要讲道理|少讲道理|别说道理|别说教|少说教|不要逻辑|别讲逻辑|不讲逻辑)/.test(text)) {
+    s.logic = "plain";
+    changes.push("后面少讲大道理，直接回应");
+  } else if (/逻辑|条理|分点|一步一步|一步步|有秩序|按点/.test(text)) {
+    s.logic = "structured";
+    changes.push("后面会按条理分点来回应");
+  }
+
+  if (/(简短|短一点|少说|简练|简洁|概括|不要太长|长话短说)/.test(text)) {
+    s.length = "short";
+    changes.push("回应会更简短");
+  } else if (/(详细一点|详细说|展开|多说一点|深入一点|具体一点|长一点|说细一点)/.test(text)) {
+    s.length = "long";
+    changes.push("回应会更详细");
+  }
+
+  return changes;
+}
+
+function feelingOf(text) {
+  const feelings = [
+    { keys: ["崩溃", "撑不住"], name: "崩溃" },
+    { keys: ["焦虑", "担心", "紧张", "不安"], name: "焦虑" },
+    { keys: ["害怕", "恐惧", "怕"], name: "害怕" },
+    { keys: ["委屈"], name: "委屈" },
+    { keys: ["生气", "愤怒", "火大"], name: "生气" },
+    { keys: ["孤独", "孤单", "没人理"], name: "孤独" },
+    { keys: ["迷茫", "没有方向", "不知道怎么办"], name: "迷茫" },
+    { keys: ["疲惫", "没力气", "好累"], name: "累" },
+    { keys: ["烦躁", "不耐烦", "很烦"], name: "烦躁" },
+    { keys: ["压力"], name: "压力" },
+    { keys: ["自责", "内疚", "对不起"], name: "自责" },
+    { keys: ["难过", "难受", "想哭", "伤心"], name: "难过" },
+    { keys: ["无助", "没办法"], name: "无助" }
+  ];
+  for (let i = 0; i < feelings.length; i++) {
+    if (containsAny(text, feelings[i].keys)) return feelings[i].name;
+  }
+  return null;
+}
+
+function hasContentSignal(text) {
+  if (matchQA(text) !== -1) return true;
+  if (detectLayerChoice(text)) return true;
+  if (feelingOf(text)) return true;
+  if (/[?？]/.test(text)) return true;
+  if (/^1([.、．:：)]?)$|为什么|怎么|如何|是不是|能不能|怎么办|困扰|原因|问题|建议|帮帮我|该不该|本质|深层|根源|底层|最主要|最根本|根本原因|第一性|剖析/.test(text)) return true;
+  return text.length > 34;
+}
+
+function isDeepRequest(text) {
+  const t = text.trim();
+  if (/^1([.、．:：)]?)$|第一个/.test(t)) return true;
+  if (/本质|深层|根源|底层逻辑|底层原因|核心原因|核心问题|最主要|最根本|根本原因|根本问题|根本因素|第一性|剖析|拆解|深度分析|透彻|说到底|往深了/.test(text)) return true;
+  if (matchQA(text) === -1 && /为什么|怎么回事|什么原因/.test(text)) return true;
+  return false;
+}
+
+function styleAck(changes, hasContent) {
+  if (!changes.length) {
+    return "你好。你可以直接说你的困扰，也可以告诉我想怎么调整，比如“语气简单一点”“先安慰我”或“先分析再安慰”。";
+  }
+  const uniq = [];
+  changes.forEach(function (c) {
+    if (uniq.indexOf(c) === -1) uniq.push(c);
+  });
+  const head = "好，" + uniq.join("；") + "。";
+  return head + (hasContent ? "" : "你可以继续说你的困扰，我会一直按这个方式来。");
 }
 
 function matchQA(text) {
@@ -387,8 +873,263 @@ function matchQA(text) {
   return best;
 }
 
-function answerFor(turn) {
-  return turn.qaIndex === -1 ? FALLBACK[state.level] : QA[turn.qaIndex].lines[state.level];
+const WARM_LINES = [
+  "先不急着分析你的感受本身：它不需要先通过“是否合理”的审查，能够出现就是一种有效信号。",
+  "先接住这份感受：它不必先证明自己“有资格存在”，才能被认真对待。",
+  "先抱抱你。你现在的感受是真实的，不需要先找到一个正当理由才允许自己难受。",
+  "先别怪自己。难受就是难受，不丢人，也不需要理由。",
+  "先别自责。你现在不好受，这不是你的错。",
+  "别自责。难受，不是你的错。"
+];
+
+const GEN_ANALYSIS = [
+  function (f) {
+    return "这份" + f + "的出现，通常对应未被满足的需求或持续超载的处境；若只把它当作“心态问题”，容易把结构性压力误判为个人缺陷。";
+  },
+  function (f) {
+    return "这份" + f + "多半是长期积累的信号：你承担或忍耐的，可能已经超过当下能消化的量。";
+  },
+  function (f) {
+    return "这份" + f + "往往不是突然出现的，而是你已经撑了很久，身体和情绪在替你说“到极限了”。";
+  },
+  function (f) {
+    return "这份" + f + "能出来，说明你已经扛了很多。它不是骂你不行，是告诉你：该松一松了。";
+  },
+  function (f) {
+    return "这份" + f + "，多半是你撑太久攒下来的，不是你想太多。";
+  },
+  function (f) {
+    return "这份" + f + "，是你撑太久攒下的，不是想太多。";
+  }
+];
+
+const GEN_ACTION = [
+  function (f) {
+    return "下一步不必急于消除" + f + "本身，而是先识别它的触发场景与持续消耗源，再据此调整负荷或边界。";
+  },
+  function (f) {
+    return "可以先不解决所有问题，只做一步：找到" + f + "最常出现的时刻或事情，先把那个场景看清楚。";
+  },
+  function (f) {
+    return "现在不用想通全部，先做一件能让自己稍微松一点的小事——离开紧绷场景几分钟，或者把压着的事写下来。";
+  },
+  function (f) {
+    return "现在别逼自己想通，先做一件小事让自己松口气，再回头看是什么一直压着你。";
+  },
+  function (f) {
+    return "现在别想太多，先做一件让自己松一点的小事。";
+  },
+  function (f) {
+    return "先别想通，先让自己松口气。";
+  }
+];
+
+const DEEP_GUIDE = [
+  "先说明：以下不是诊断结论，而是把问题拆成可逐层对照与排除的层级假设。\n\n" +
+  "一、归因层\n个人：你的习惯、自我要求或归因方式中，是否存在放大或维持问题的部分？\n他人：是否存在特定关系或评价主体，持续影响你的自我状态？\n社会：是否有文化规范、角色期待或制度结构，把压力沉淀为个人责任？\n现实：是否存在时间、身体、经济、规则等超出个人意志范围的客观约束？\n\n" +
+  "二、深层结构\n需求：这个困扰可能在保护何种未被满足的核心需求——认可、安全、自主，还是意义？\n认知：你对事件的解释，是否混入了绝对化或自我贬低式的评判？\n维持：反复的内耗正由哪种回路维持——反刍、回避、讨好，还是自我责备？\n身体：是否同时存在精力、睡眠或生理耗竭，正被误读为心理脆弱？\n\n" +
+  "三、收敛\n将可控性区分为可改变、可影响与需接纳三类：前者着手调整，后者调整应对，而非持续自责。\n可挑选上述任一层面继续细化，我可据此深入。",
+
+  "先说明，下面不是替你下结论，而是把“一件事为什么会变成现在这样”拆成几层，你可以逐层对照。\n\n" +
+  "个人：你的习惯、期待和自我要求里，哪些在起作用？\n他人：谁的态度、评价或要求一直在影响你？\n社会：有没有“应该怎样”的隐形标准或角色期待在施压？\n现实：有没有客观限制——时间、身体、金钱、规则——暂时改不了？\n\n" +
+  "再往里看：这个困扰可能在替你争取什么——认可、安全、自主，还是意义？你心里那个评判的声音是什么？让问题反复转动的动作，是反刍、回避、讨好还是硬扛？身体是否已经被耗得很累，却被当成了“心理脆弱”？\n\n" +
+  "最后分开：能改的着手改，能影响的调整预期，改不了的学着与它共处。选一层告诉我，我们再往下走。",
+
+  "先别急着问“是不是我的问题”。我把这件事能展开的层面给你，当作地图，不当作判决。\n\n" +
+  "个人：里面有没有你的习惯、期待或“应该”在起作用？\n他人：是不是有谁的态度、评价或要求一直压着你？\n社会：是不是有股“别人都怎样、你应该怎样”的标准在推你？\n现实：有没有时间、身体、钱、规则这类暂时改不了的客观限制？\n\n" +
+  "再往深看：这件事真正让你在意的，可能是认可、安全、自主，还是意义？你心里是不是有个声音一直在评判你？让你反复难受的动作，是反复想、逃避、讨好别人，还是硬扛？你的身体是不是已经很累了，却被当成了“想太多”？\n\n" +
+  "最后分清楚：能改的去改；只能影响一半的，调整预期；改不了的，学着和它共处，别再怪自己。你可以挑一层告诉我，我们从那里继续挖。",
+
+  "先别怪自己。把一件事为什么会变成这样，拆开看。\n\n" +
+  "个人：你的习惯或要求，占了多少？\n他人：谁在给你压力，让你一直看他脸色？\n社会：是不是“应该怎样”这种话在逼你？\n现实：有没有时间、身体、钱这些改不了的限制？\n\n" +
+  "再看深点：你最想要的，是被认可、安全感、自由，还是意义？是不是心里总有个声音骂你？是不是一直反复想、躲着不做、讨好别人或者硬扛？身体是不是已经很累了，却被当成想太多？\n\n" +
+  "最后：能改的去改；只能改一半的，接受一半；改不了的，学着和它一起过。别再骂自己。挑一层告诉我，我陪你继续挖。",
+
+  "先别自责。把事拆开看。\n\n" +
+  "个人：你的习惯或要求？\n他人：谁在给你压力？\n社会：是不是“应该怎样”在逼你？\n现实：有没有改不了的地方？\n\n" +
+  "再想：你最想要什么？心里是不是有个声音总骂你？是不是越想越累、越躲越累？身体是不是已经很累了？\n\n" +
+  "能改的去改，改不了的学着一起过。挑一层，我们往下聊。",
+
+  "先别怪自己。拆开看。\n\n" +
+  "个人：你的要求？\n他人：谁的压力？\n社会：该怎样的标准？\n现实：改不了的部分？\n\n" +
+  "你最想要什么？是不是总有个声音骂你？是不是越想越累？\n\n" +
+  "能改的去改，改不了的学着共处。你选一层，我陪你挖。"
+];
+
+const LAYER_OPEN = [
+  "从「X」层面切入是合适的。为避免结论先行，先把它当作待验证的一组线索，逐条对照：",
+  "我们先把「X」这一层单独拆开看，不用急着下结论：",
+  "好，那我们从「X」这一层继续，先把它看清楚：",
+  "行，那就看「X」这一块。我提几个问题，你对着想就行：",
+  "好，看「X」。这几个问题你可以慢慢想：",
+  "好，看「X」。你顺着想就行："
+];
+
+const LAYER_TIPS = {
+  "个人": "这件事里，你的什么习惯、期待或自我要求正在放大它？如果换一个标准看，它还成立吗？你的行为里，哪一部分是主动选择，哪一部分只是惯性？",
+  "他人": "先找出一段具体的关系，而不是泛泛的“别人”。那个人的态度、评价或要求，具体在哪一刻影响了你？如果他暂时不会改变，你能在哪里守住自己的边界？",
+  "社会": "看看你正在执行谁的“应该”——这套标准从哪里来？是文化、行业、家庭还是身边人默认的规则？它适合你当前的处境吗？哪些标准你其实可以不接？",
+  "现实": "把暂时改不了的条件单独列出来：时间、身体、金钱、制度、地理位置。先承认它们是边界而不是失败，再问：在这个边界以内，我还剩哪些可以选择的空间？",
+  "需求": "如果这份烦恼突然消失，你最希望得到的是什么？是认可、安全、自主、亲密，还是意义？先不用想着怎么解决，先把它说清楚。",
+  "认知": "把事实和解释分开：客观发生了什么？你心里自动冒出的那句话是什么？如果换成别人经历同一件事，你会怎么替他解释？",
+  "维持": "试着画出循环：发生了一件事 → 你心里怎么想 → 你做了什么 → 之后更难受还是更轻松 → 于是你又做了什么。从哪一环打断最容易？",
+  "身体": "先不看心态。你最近的睡眠、精力、身体哪一处已经在报警？先把生理这笔账补上，再看看同样的事情，心里会不会轻一点。",
+  "可控": "把所有因素分成三类：能改的、只能影响一半的、暂时改不了的。先只动第一类，并且练习区分第三类——它不需要你用自责来对抗。"
+};
+
+function detectLayerChoice(text) {
+  const marker = /(个人|自己)(的)?(层面|这一层|那层|层|因素|原因|角度|维度)|(他人|别人|关系|领导|同事|父母|家人|伴侣|朋友)(的)?(层面|这一层|那层|层|因素|原因|角度|维度)|(社会|环境)(的)?(层面|这一层|那层|层|因素|原因|角度|维度|局限)|(现实)(的)?(层面|这一层|那层|层|因素|原因|角度|维度|局限)|(需求|想要|渴望)(的)?(层面|这一层|那层|层|因素|原因)|(认知|想法|看法)(的)?(层面|这一层|那层|层|因素|原因)|(维持|循环)(的)?(层面|这一层|那层|层|因素|原因)|(身体|生理|精力)(的)?(层面|这一层|那层|层|因素|原因)|(可控|能改)(的)?(层面|这一层|那层|层|因素|原因)/;
+  if (!marker.test(text)) return null;
+  if (/(个人|自己)/.test(text)) return "个人";
+  if (/(他人|别人|关系|领导|同事|父母|家人|伴侣|朋友)/.test(text)) return "他人";
+  if (/(社会|环境)/.test(text)) return "社会";
+  if (/现实/.test(text)) return "现实";
+  if (/(需求|想要|渴望)/.test(text)) return "需求";
+  if (/(认知|想法|看法)/.test(text)) return "认知";
+  if (/(维持|循环)/.test(text)) return "维持";
+  if (/(身体|生理|精力)/.test(text)) return "身体";
+  if (/(可控|能改)/.test(text)) return "可控";
+  return null;
+}
+
+function layerReply(layer) {
+  const open = LAYER_OPEN[state.level].replace("X", layer);
+  const tip = LAYER_TIPS[layer] || "你可以先说说这一层里最接近你处境的一条。";
+  let t = open + "\n\n" + tip;
+  if (state.style.length === "short") {
+    t = "我们从「" + layer + "」这一层看。\n\n" + tip;
+  }
+  return t;
+}
+
+function genericRoles(text) {
+  const f = feelingOf(text);
+  if (!f) return [{ role: "analysis", text: FALLBACK[state.level] }];
+  return [
+    { role: "analysis", text: GEN_ANALYSIS[state.level](f) },
+    { role: "action", text: GEN_ACTION[state.level](f) }
+  ];
+}
+
+function roleTexts(turn) {
+  const s = state.style;
+  let roles;
+  if (turn.qaIndex >= 0) {
+    roles = [{ role: "analysis", text: QA[turn.qaIndex].lines[state.level] }];
+  } else {
+    roles = genericRoles(turn.text);
+  }
+
+  const isEmotion = feelingOf(turn.text) !== null;
+  const comfortOn = s.comfort !== "off" && (s.comfort === "more" || s.order === "comfort-first" || isEmotion);
+  if (comfortOn && !roles.some(function (r) { return r.role === "comfort"; })) {
+    roles.unshift({ role: "comfort", text: WARM_LINES[state.level] });
+  }
+  if (s.comfort === "off") {
+    roles = roles.filter(function (r) { return r.role !== "comfort"; });
+  }
+
+  if (s.order === "analysis-first") {
+    const analysis = roles.filter(function (r) { return r.role === "analysis"; });
+    const comfort = roles.filter(function (r) { return r.role === "comfort"; });
+    const rest = roles.filter(function (r) { return r.role !== "analysis" && r.role !== "comfort"; });
+    roles = analysis.concat(comfort, rest);
+  } else if (s.order === "action-first") {
+    const action = roles.filter(function (r) { return r.role === "action"; });
+    roles = action.concat(roles.filter(function (r) { return r.role !== "action"; }));
+  }
+
+  if (s.length === "short" && roles.length > 2) {
+    roles = roles.slice(0, 2);
+  }
+  return roles;
+}
+
+function joinRoles(roles) {
+  const s = state.style;
+  const labels = { comfort: "先回应感受", analysis: "核心分析", action: "眼下可做的一步" };
+  if (roles.length === 1) {
+    let t = roles[0].text;
+    if (s.length === "short" && t.length > 160) t = t.slice(0, 160) + "……";
+    return t;
+  }
+  const parts = roles.map(function (r, i) {
+    const head = s.logic === "structured" ? (i + 1) + "｜" + labels[r.role] + "\n" : "";
+    return head + r.text;
+  });
+  let t = parts.join("\n\n");
+  if (s.length === "short" && t.length > 240) t = t.slice(0, 240) + "……";
+  return t;
+}
+
+function replyFor(turn) {
+  if (turn.note) return turn.ack || "";
+  if (turn.layer) return layerReply(turn.layer);
+  if (turn.deep) {
+    let t = "";
+    if (turn.qaIndex >= 0) {
+      t = QA[turn.qaIndex].lines[state.level] + "\n\n";
+    }
+    t += DEEP_GUIDE[state.level];
+    if (state.style.length === "short" && t.length > 620) {
+      t = t.slice(0, 620) + "……";
+    }
+    return t;
+  }
+  return joinRoles(roleTexts(turn));
+}
+
+function htmlAnswer(s) {
+  return esc(s).replace(/\n/g, "<br>");
+}
+
+function timeLabel(ts) {
+  try {
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return "";
+    const now = new Date();
+    const hm = d.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", hour12: false });
+    return d.toDateString() === now.toDateString()
+      ? "今天 " + hm
+      : d.toLocaleDateString("zh-CN", { month: "long", day: "numeric" }) + " " + hm;
+  } catch (err) {
+    return "";
+  }
+}
+
+function renderHistory() {
+  if (!conv.length) {
+    historyList.innerHTML = '<li class="history-empty">还没有对话记录</li>';
+    return;
+  }
+  historyList.innerHTML = conv.map(function (turn) {
+    const preview = replyFor(turn);
+    return '<li class="his-item" data-id="' + esc(turn.id) + '">' +
+      '<div class="his-body">' +
+        '<p class="his-q"><span class="tag tag-me">我</span>' + esc(turn.text) + "</p>" +
+        '<p class="his-a"><span class="tag tag-you">你</span>' + esc(preview) + "</p>" +
+        '<time class="his-time">' + esc(timeLabel(turn.ts)) + "</time>" +
+      "</div>" +
+      '<button class="his-del" type="button" data-del="' + esc(turn.id) + '" aria-label="删除这条记录">删除</button>' +
+    "</li>";
+  }).join("");
+}
+
+function openDrawer() {
+  drawer.classList.add("open");
+  backdrop.classList.add("show");
+  drawer.setAttribute("aria-hidden", "false");
+  menuBtn.setAttribute("aria-expanded", "true");
+  document.body.classList.add("drawer-open");
+  renderHistory();
+}
+
+function closeDrawer() {
+  drawer.classList.remove("open");
+  backdrop.classList.remove("show");
+  drawer.setAttribute("aria-hidden", "true");
+  menuBtn.setAttribute("aria-expanded", "false");
+  document.body.classList.remove("drawer-open");
 }
 
 function render() {
@@ -407,20 +1148,56 @@ function render() {
     rows.push('<div class="row me" style="transition-delay:' + (t * 2 + 1) * 0.045 + 's">' +
       '<div class="talk"><span class="who">我</span><div class="bubble">' + esc(turn.text) + "</div></div></div>");
     rows.push('<div class="row you" style="transition-delay:' + (t * 2 + 2) * 0.045 + 's">' +
-      '<div class="talk"><span class="who">你</span><p>' + answerFor(turn) + "</p></div></div>");
+      '<div class="talk"><span class="who">你</span><p>' + htmlAnswer(replyFor(turn)) + "</p></div></div>");
   });
   chat.innerHTML = rows.join("");
 
   chat.classList.remove("show");
   void chat.offsetWidth;
   chat.classList.add("show");
+  renderHistory();
+  saveStyle();
 }
 
 function submitQ() {
   const text = input.value.trim();
   if (!text) return;
-  conv.push({ text: text, qaIndex: matchQA(text) });
+  const changes = detectAdjust(text);
+  const content = hasContentSignal(text);
+  let turn;
+  if (!changes.length && !content) {
+    turn = {
+      id: uid(),
+      text: text,
+      note: true,
+      qaIndex: -1,
+      ack: styleAck(changes, false),
+      ts: new Date().toISOString()
+    };
+  } else if (changes.length && !content) {
+    turn = {
+      id: uid(),
+      text: text,
+      note: true,
+      qaIndex: -1,
+      ack: styleAck(changes, false),
+      ts: new Date().toISOString()
+    };
+  } else {
+    const deep = content && isDeepRequest(text);
+    const layer = content && !deep ? detectLayerChoice(text) : null;
+    turn = {
+      id: uid(),
+      text: text,
+      qaIndex: layer ? -1 : matchQA(text),
+      deep: deep || undefined,
+      layer: layer || undefined,
+      ts: new Date().toISOString()
+    };
+  }
+  conv.push(turn);
   input.value = "";
+  saveHistory();
   render();
   window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   input.focus();
@@ -447,6 +1224,42 @@ btnSimple.addEventListener("click", function () {
     state.level += 1;
     render();
   }
+});
+
+menuBtn.addEventListener("click", function () {
+  if (drawer.classList.contains("open")) {
+    closeDrawer();
+  } else {
+    openDrawer();
+  }
+});
+
+closeDrawerBtn.addEventListener("click", closeDrawer);
+backdrop.addEventListener("click", closeDrawer);
+
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape" && drawer.classList.contains("open")) {
+    closeDrawer();
+  }
+});
+
+historyList.addEventListener("click", function (e) {
+  const btn = e.target.closest(".his-del");
+  if (!btn) return;
+  const id = btn.getAttribute("data-del");
+  const idx = conv.findIndex(function (turn) { return turn.id === id; });
+  if (idx === -1) return;
+  conv.splice(idx, 1);
+  saveHistory();
+  render();
+});
+
+clearAllBtn.addEventListener("click", function () {
+  if (!conv.length) return;
+  if (!window.confirm("确定清空全部对话记录吗？此操作无法撤销。")) return;
+  conv = [];
+  saveHistory();
+  render();
 });
 
 render();
